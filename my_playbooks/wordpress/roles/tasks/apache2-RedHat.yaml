@@ -1,0 +1,47 @@
+---
+# Task file for Nginx installation on RedHat
+#-----------------------Instalación Nginx RedHat-----------------------
+- name: Nginx installation
+  yum:
+    name: nginx
+    state: latest
+
+# Start nginx service
+- name: Start nginx service
+  service:
+    name: nginx
+    state: started
+
+# Open ports in the firewall
+- name: Open ports in firewall
+  firewalld:
+    service: https
+    permanent: true
+    state: enabled
+
+# Open HTTP port (80)
+- name: Open port 80 in firewall
+  firewalld:
+    port: 80/tcp
+    permanent: true
+    state: enabled
+
+# Open HTTPS port (22)
+- name: Open port 22 in firewall
+  firewalld:
+    port: 22/tcp
+    permanent: true
+    state: enabled
+
+# Restart firewall and apply changes
+- name: Restart firewall and apply changes
+  service:
+    name: firewalld
+    state: reloaded
+
+# Restart nginx
+- name: Restart nginx
+  service:
+    name: nginx
+    state: restarted
+...
