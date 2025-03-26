@@ -1,0 +1,11 @@
+---
+# vars file for roles
+awx_version: 23.1.0
+awx_admin_user: admin
+awx_admin_password: adminpassword
+postgres_user: awx
+postgres_password: awxpass
+postgres_db: awx
+postgres_host: 127.0.0.1
+postgres_port: 5432
+docker_compose_path: "/opt/awx/docker-compose.yml"

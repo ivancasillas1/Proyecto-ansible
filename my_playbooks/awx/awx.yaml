@@ -1,0 +1,9 @@
+---
+# Main file for awx installation
+- name: AWX installation
+  hosts: cliente4
+  become: yes
+  become_method: sudo
+  roles:
+    - roles
+...

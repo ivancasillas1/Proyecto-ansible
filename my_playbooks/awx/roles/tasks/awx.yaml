@@ -1,0 +1,79 @@
+# tasks file for nginx installation on Debian
+#-----------------------Instalación AWX Debian-----------------------
+- name: Install required packages
+  apt:
+    name:
+      - git
+      - curl
+      - docker.io
+      - docker-compose
+      - python3-pip
+    state: present
+    update_cache: yes
+  when: ansible_os_family == "Debian"
+
+- name: Clone AWX repository
+  git:
+    repo: "https://github.com/ansible/awx.git"
+    dest: "/opt/awx"
+    version: "{{ awx_version }}"
+
+- name: Copy docker-compose template
+  copy:
+    dest: "{{ docker_compose_path }}"
+    content: |
+      version: '3.8'
+      services:
+        postgres:
+          image: postgres:13
+          environment:
+            POSTGRES_USER: "{{ postgres_user }}"
+            POSTGRES_PASSWORD: "{{ postgres_password }}"
+            POSTGRES_DB: "{{ postgres_db }}"
+          ports:
+            - "{{ postgres_port }}:5432"
+
+        awx_web:
+          image: quay.io/ansible/awx:{{ awx_version }}
+          environment:
+            DATABASE_USER: "{{ postgres_user }}"
+            DATABASE_PASSWORD: "{{ postgres_password }}"
+            DATABASE_NAME: "{{ postgres_db }}"
+            DATABASE_HOST: "postgres"
+            DATABASE_PORT: "5432"
+            AWX_ADMIN_USER: "{{ awx_admin_user }}"
+            AWX_ADMIN_PASSWORD: "{{ awx_admin_password }}"
+          ports:
+            - "80:80"
+          depends_on:
+            - postgres
+          command: ["dumb-init", "--", "awx", "web"]  # Comando para iniciar la parte web de AWX
+
+        awx_task:
+          image: quay.io/ansible/awx:{{ awx_version }}
+          environment:
+            DATABASE_USER: "{{ postgres_user }}"
+            DATABASE_PASSWORD: "{{ postgres_password }}"
+            DATABASE_NAME: "{{ postgres_db }}"
+            DATABASE_HOST: "postgres"
+            DATABASE_PORT: "5432"
+          depends_on:
+            - postgres
+          command: ["dumb-init", "--", "awx", "task"]  # Comando para iniciar la parte de tareas de AWX
+
+- name: Set COMPOSE_HTTP_TIMEOUT environment variable
+  lineinfile:
+    path: /etc/environment
+    line: "COMPOSE_HTTP_TIMEOUT=120"
+    create: yes
+
+- name: Start AWX with Docker-Compose
+  command: docker-compose up -d
+  args:
+    chdir: "/opt/awx"
+
+- name: Ensure AWX is running
+  wait_for:
+    host: "192.168.10.44"  # Cambia a la IP correspondiente de tu servidor
+    port: 80
+    timeout: 300
