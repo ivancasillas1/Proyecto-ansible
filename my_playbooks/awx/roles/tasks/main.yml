@@ -1,3 +1,0 @@
----
-# tasks file for roles
-- include_tasks: awx.yaml
