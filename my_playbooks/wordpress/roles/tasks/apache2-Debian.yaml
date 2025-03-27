@@ -1,6 +1,6 @@
 ---
 # tasks file for nginx installation on Debian
-#-----------------------Instalación Nginx Debian-----------------------
+#-----------------------Instalación Apache2 Debian-----------------------
 # Update package cache
 - name: Update package cache
   apt:
