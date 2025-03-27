@@ -1,13 +1,13 @@
 ---
 - name: MariaDB Installation
-  hosts: mariadb
+  hosts: 192.168.10.44
   become: yes
   become_method: sudo
   roles:
     - mariadb
 
 - name: Wordpress Installation
-  hosts: wordpress
+  hosts: 192.168.10.43
   become: yes
   become_method: sudo
   roles:
