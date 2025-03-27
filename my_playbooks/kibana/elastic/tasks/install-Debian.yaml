@@ -1,0 +1,21 @@
+---
+# task file for grafana installation in Debian
+#-----------------------Instalación Grafana Debian-----------------------
+- name: Add grafana repository
+  apt_repository:
+    repo: "{{ grafana_install_repo }}"
+    state: present
+    filename: grafana
+    update_cache: yes
+
+- name: Add Grafana GPG key
+  apt_key:
+    utl: "{{ grafana_install_gpg_key }}"
+    state: present
+
+- name: Install grafana
+  apt:
+    name: grafana
+    state: present
+    update_cache: yes
+...
