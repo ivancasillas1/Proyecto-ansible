@@ -1,5 +1,5 @@
 ---
-# tasks file for nginx installation on Debian
+# tasks file for apache2 installation on Debian
 #-----------------------Instalación Apache2 Debian-----------------------
 # Update package cache
 - name: Update package cache
