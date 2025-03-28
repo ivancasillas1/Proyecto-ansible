@@ -1,8 +1,0 @@
----
-- name: kibana installation
-  hosts: cliente5
-  become: yes
-  become_method: sudo
-  roles:
-    - roles
-...
